@@ -1,5 +1,6 @@
 package org.example.store.controller;
 
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -58,22 +59,37 @@ public class ProductViewController {
     private String selectedImagePath = null;
 
     @FXML
-    public void initialize() throws SQLException {
-        conn = DB.connect();
+    public void initialize() {
+        // placeholder لو الجدول فاضي
+        productTable.setPlaceholder(new Label("جارٍ تحميل المنتجات..."));
 
-        // إعداد الأعمدة
+        // محاولة الاتصال بقاعدة البيانات
+        try {
+            conn = DB.connect();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            AlertUtil.showError("خطأ", "فشل الاتصال بقاعدة البيانات: " + ex.getMessage());
+            productTable.setPlaceholder(new Label("خطأ في الاتصال بقاعدة البيانات"));
+            return;
+        }
+
+        // إعداد أعمدة الربط (اسم/سعر/مسار صورة) — تأكد إنها مرتبطة بالـ model
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         priceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
         imageCol.setCellValueFactory(new PropertyValueFactory<>("imagePath"));
 
-        // عمود الرقم التسلسلي
+        // إزالة أية أعمدة مساعدة قد تكون أضيفت سابقاً لتفادي التكرار (بناء المشهد أكثر من مرة)
+        productTable.getColumns().removeIf(c -> "الرقم".equals(c.getText()) || "صورة".equals(c.getText()));
+
+        // عمود الرقم التسلسلي (الرقم)
         TableColumn<Product, Number> serialCol = new TableColumn<>("الرقم");
         serialCol.setCellValueFactory(col ->
                 new ReadOnlyObjectWrapper<>(productTable.getItems().indexOf(col.getValue()) + 1)
         );
+        serialCol.setPrefWidth(60);
         productTable.getColumns().add(0, serialCol);
 
-        // عمود الصورة المصغرة
+        // عمود الصورة المصغرة — نسخة آمنة تستخدم getTableRow().getItem()
         TableColumn<Product, Void> thumbnailCol = new TableColumn<>("صورة");
         thumbnailCol.setCellFactory(col -> new TableCell<Product, Void>() {
             private final ImageView imageView = new ImageView();
@@ -89,29 +105,48 @@ public class ProductViewController {
                 super.updateItem(item, empty);
                 if (empty) {
                     setGraphic(null);
-                } else {
-                    Product product = getTableView().getItems().get(getIndex());
-                    if (product.getImagePath() != null && !product.getImagePath().isEmpty()) {
-                        try {
-                            File file = new File(product.getImagePath());
-                            if (file.exists()) {
-                                imageView.setImage(new Image(file.toURI().toString()));
-                                setGraphic(imageView);
-                            } else {
-                                setGraphic(null);
-                            }
-                        } catch (Exception e) {
+                    return;
+                }
+
+                // نحصل على المنتج من الـ row بدلاً من الاعتماد على getIndex()
+                Product product = null;
+                TableRow<?> row = getTableRow();
+                if (row != null) {
+                    Object rowItem = row.getItem();
+                    if (rowItem instanceof Product) {
+                        product = (Product) rowItem;
+                    }
+                }
+
+                if (product == null) {
+                    setGraphic(null);
+                    return;
+                }
+
+                String imgPath = product.getImagePath();
+                if (imgPath != null && !imgPath.trim().isEmpty()) {
+                    try {
+                        File file = new File(imgPath);
+                        if (file.exists()) {
+                            imageView.setImage(new Image(file.toURI().toString()));
+                            setGraphic(imageView);
+                        } else {
+                            // ملف الصورة غير موجود — لا نعرض مصغر لكن نعرض صف المنتج
                             setGraphic(null);
                         }
-                    } else {
+                    } catch (Exception e) {
                         setGraphic(null);
                     }
+                } else {
+                    // لا توجد صورة — لا نعرض مصغر لكن نعرض الصف عادي
+                    setGraphic(null);
                 }
             }
         });
+        thumbnailCol.setPrefWidth(60);
         productTable.getColumns().add(1, thumbnailCol);
 
-        // عند اختيار منتج
+        // عند اختيار صف نملأ الحقول
         productTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 nameField.setText(newSelection.getName());
@@ -119,23 +154,43 @@ public class ProductViewController {
                 selectedImagePath = newSelection.getImagePath();
                 imagePathLabel.setText(selectedImagePath != null ? selectedImagePath : "لم يتم اختيار صورة");
 
-                // عرض الصورة
                 if (selectedImagePath != null && !selectedImagePath.isEmpty()) {
                     File file = new File(selectedImagePath);
                     if (file.exists()) {
                         productImageView.setImage(new Image(file.toURI().toString()));
+                    } else {
+                        productImageView.setImage(null);
                     }
                 } else {
                     productImageView.setImage(null);
                 }
+            } else {
+                // تم إلغاء الاختيار — نفضي الحقول
+                clearFields();
             }
         });
 
+        // ضبط الـ items مبكراً لتفادي مشاكل الـ index أثناء حساب الرقم التسلسلي
+        productTable.setItems(productList);
+
+        // أخيراً نحمل المنتجات
         loadProducts();
     }
 
     private void loadProducts() {
         productList.clear();
+
+        if (conn == null) {
+            try {
+                conn = DB.connect();
+            } catch (Exception e) {
+                e.printStackTrace();
+                AlertUtil.showError("خطأ", "لا يمكن الاتصال بقاعدة البيانات: " + e.getMessage());
+                productTable.setPlaceholder(new Label("خطأ في الاتصال بقاعدة البيانات"));
+                return;
+            }
+        }
+
         String sql = "SELECT * FROM products WHERE active = 1 ORDER BY name";
         try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
@@ -147,10 +202,23 @@ public class ProductViewController {
                         rs.getBoolean("active")
                 ));
             }
-            productTable.setItems(productList);
+
+            // عرض الـ items (ضمن الـ UI thread)
+            Platform.runLater(() -> {
+                productTable.setItems(productList);
+                productTable.refresh();
+            });
+
+            if (productList.isEmpty()) {
+                productTable.setPlaceholder(new Label("لا توجد منتجات مفعّلة لعرضها."));
+            } else {
+                productTable.setPlaceholder(new Label("لا توجد منتجات"));
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
-            AlertUtil.showError("خطأ", "فشل في تحميل المنتجات");
+            AlertUtil.showError("خطأ", "فشل في تحميل المنتجات: " + e.getMessage());
+            productTable.setPlaceholder(new Label("فشل في تحميل المنتجات"));
         }
     }
 
@@ -165,13 +233,11 @@ public class ProductViewController {
         File selectedFile = fileChooser.showOpenDialog(chooseImageButton.getScene().getWindow());
         if (selectedFile != null) {
             try {
-                // إنشاء مجلد للصور إذا لم يكن موجوداً
                 Path imagesDir = Paths.get("images");
                 if (!Files.exists(imagesDir)) {
                     Files.createDirectories(imagesDir);
                 }
 
-                // نسخ الصورة لمجلد الصور
                 String fileName = System.currentTimeMillis() + "_" + selectedFile.getName();
                 Path destination = imagesDir.resolve(fileName);
                 Files.copy(selectedFile.toPath(), destination, StandardCopyOption.REPLACE_EXISTING);
@@ -247,7 +313,6 @@ public class ProductViewController {
         confirmAlert.setContentText(selected.getName());
 
         if (confirmAlert.showAndWait().get() == ButtonType.OK) {
-            // حذف ناعم - نخلي active = 0
             String sql = "UPDATE products SET active = 0 WHERE id = ?";
             try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                 pstmt.setInt(1, selected.getId());

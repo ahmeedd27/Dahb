@@ -1,5 +1,6 @@
 package org.example.store.utils;
 
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -29,6 +30,24 @@ public class SceneRouter {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * مكسّر (يملي الشاشة) بشكل آمن على JavaFX Application Thread
+     */
+    public static void maximize() {
+        if (mainStage != null) {
+            Platform.runLater(() -> mainStage.setMaximized(true));
+        }
+    }
+
+    /**
+     * لو حابب وضع full-screen (يخفي شريط المهام)
+     */
+    public static void fullScreen() {
+        if (mainStage != null) {
+            Platform.runLater(() -> mainStage.setFullScreen(true));
         }
     }
 }

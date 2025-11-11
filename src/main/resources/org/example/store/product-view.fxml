@@ -1,125 +1,108 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.image.ImageView?>
 
-<BorderPane xmlns="http://javafx.com/javafx/23.0.1"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="org.example.store.controller.ProductViewController"
-            nodeOrientation="RIGHT_TO_LEFT"
-            prefHeight="700.0" prefWidth="1000.0"
-            style="-fx-background-color: #f5f5f5;">
+<BorderPane nodeOrientation="RIGHT_TO_LEFT" prefHeight="700.0" prefWidth="1000.0" style="-fx-background-color: #f5f5f5;"
+            xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.store.controller.ProductViewController">
 
     <!-- Top: العنوان -->
     <top>
-        <VBox spacing="10" style="-fx-background-color: #2196F3; -fx-padding: 20;">
-            <Label text="🍔 إدارة المنتجات - المطعم"
-                   style="-fx-font-size: 24px; -fx-text-fill: white; -fx-font-weight: bold;"/>
-            <Label text="أضف وعدل منتجات المطعم (الساندويتشات والوجبات)"
-                   style="-fx-font-size: 14px; -fx-text-fill: white;"/>
-        </VBox>
+        <HBox>
+            <VBox spacing="10" style="-fx-background-color: #2196F3; -fx-padding: 20;">
+                <Label style="-fx-font-size: 24px; -fx-text-fill: white; -fx-font-weight: bold;"
+                       text="إدارة المنتجات - المطعم"/>
+                <Label style="-fx-font-size: 14px; -fx-text-fill: white;" text="أضف وعدل المنتجات"/>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS"/>
+
+
+            <!-- زر التحديث فوق، مُنسق عن طريق CSS -->
+            <Button fx:id="refreshTop" onAction="#handleRefresh" text="تحديث"  style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10; -fx-font-weight: bold;"/>
+        </HBox>
     </top>
 
-    <!-- Center: الجدول والنموذج -->
+    <!-- Center: جدول على الشمال + لوحة العمليات على اليمين -->
     <center>
-        <VBox spacing="20" style="-fx-padding: 20;">
-
-            <!-- جدول المنتجات -->
-            <VBox spacing="10">
-                <Label text="قائمة المنتجات"
-                       style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
-
-                <TableView fx:id="productTable" prefHeight="250"
-                           style="-fx-background-color: white; -fx-border-radius: 10;">
+        <HBox spacing="20" style="-fx-padding: 20;">
+            <!-- LEFT: Table (يشغل الحيز الأكبر) -->
+            <VBox spacing="10" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+                <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="قائمة المنتجات"/>
+                <TableView fx:id="productTable" style="-fx-background-color: white; -fx-border-radius: 10;"
+                           VBox.vgrow="ALWAYS">
                     <columns>
-                        <TableColumn fx:id="nameCol" text="اسم المنتج" prefWidth="250"/>
-                        <TableColumn fx:id="priceCol" text="السعر (جنيه)" prefWidth="120"/>
-                        <TableColumn fx:id="imageCol" text="مسار الصورة" prefWidth="300"/>
+                        <!-- وسعت اسم المنتج ليوفر مساحة عرض أفضل -->
+                        <TableColumn fx:id="nameCol" prefWidth="120" text="اسم المنتج"/>
+                        <TableColumn fx:id="priceCol" prefWidth="90" text="السعر"/>
+                        <TableColumn fx:id="imageCol" prefWidth="220" text="مسار الصورة"/>
                     </columns>
                 </TableView>
             </VBox>
 
-            <!-- نموذج الإدخال -->
-            <VBox spacing="15"
-                  style="-fx-background-color: white; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10;">
-                <Label text="معلومات المنتج"
-                       style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+            <!-- RIGHT: لوحة الإضافة/التعديل (عرض أكبر لعرض المحتوى) -->
+            <VBox prefWidth="480" spacing="16"
+                  style="-fx-background-color: white; -fx-padding: 22; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8,0,0,2);">
+                <Label style="-fx-font-size: 16px; -fx-font-weight: bold;" text="معلومات المنتج"/>
 
-                <GridPane hgap="15" vgap="15">
+                <GridPane hgap="12" vgap="14">
                     <columnConstraints>
-                        <ColumnConstraints percentWidth="20"/>
-                        <ColumnConstraints percentWidth="80"/>
+                        <ColumnConstraints percentWidth="30"/>
+                        <ColumnConstraints percentWidth="70"/>
                     </columnConstraints>
 
-                    <!-- اسم المنتج -->
-                    <Label text="اسم المنتج:" GridPane.rowIndex="0" GridPane.columnIndex="0"
-                           style="-fx-font-weight: bold;"/>
-                    <TextField fx:id="nameField"
-                               promptText="مثال: شاورما فراخ"
-                               GridPane.rowIndex="0" GridPane.columnIndex="1"
-                               style="-fx-font-size: 14px;"/>
+                    <Label style="-fx-font-weight: bold;" text="اسم المنتج:" GridPane.columnIndex="0"
+                           GridPane.rowIndex="0"/>
+                    <TextField fx:id="nameField" promptText="مثال: شاورما فراخ" GridPane.columnIndex="1"
+                               GridPane.rowIndex="0"/>
 
-                    <!-- السعر -->
-                    <Label text="السعر:" GridPane.rowIndex="1" GridPane.columnIndex="0"
-                           style="-fx-font-weight: bold;"/>
-                    <TextField fx:id="priceField"
-                               promptText="مثال: 35.00"
-                               GridPane.rowIndex="1" GridPane.columnIndex="1"
-                               style="-fx-font-size: 14px;"/>
+                    <Label style="-fx-font-weight: bold;" text="السعر:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                    <TextField fx:id="priceField" promptText="مثال: 35.00" GridPane.columnIndex="1"
+                               GridPane.rowIndex="1"/>
 
-                    <!-- اختيار الصورة -->
-                    <Label text="صورة المنتج:" GridPane.rowIndex="2" GridPane.columnIndex="0"
-                           style="-fx-font-weight: bold;"/>
-                    <HBox spacing="10" GridPane.rowIndex="2" GridPane.columnIndex="1">
-                        <Button fx:id="chooseImageButton"
-                                text="اختر صورة 📷"
-                                onAction="#handleChooseImage"
-                                style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                    <Label style="-fx-font-weight: bold;" text="صورة المنتج:" GridPane.columnIndex="0"
+                           GridPane.rowIndex="2"/>
+                    <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                        <Button fx:id="chooseImageButton" onAction="#handleChooseImage"
+                                style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-weight: bold;"
+                                text="اختر صورة"/>
                         <Label fx:id="imagePathLabel"
-                               text="لم يتم اختيار صورة"
-                               style="-fx-text-fill: #666; -fx-font-size: 12px;"/>
+                               style="-fx-text-fill: #666; -fx-font-size: 12px; -fx-wrap-text: true;"
+                               text="لم يتم اختيار صورة"/>
                     </HBox>
 
-                    <!-- معاينة الصورة -->
-                    <Label text="معاينة:" GridPane.rowIndex="3" GridPane.columnIndex="0"
-                           style="-fx-font-weight: bold;"/>
-                    <ImageView fx:id="productImageView"
-                               fitWidth="150" fitHeight="150"
-                               preserveRatio="true"
-                               GridPane.rowIndex="3" GridPane.columnIndex="1"
-                               style="-fx-border-color: #ddd; -fx-border-width: 1;"/>
+                    <Label style="-fx-font-weight: bold;" text="معاينة:" GridPane.columnIndex="0"
+                           GridPane.rowIndex="3"/>
+                    <!-- وسعت المعاينة لعرض أوضح -->
+                    <ImageView fx:id="productImageView" fitHeight="160" fitWidth="260" preserveRatio="true"
+                               style="-fx-border-color: #ddd; -fx-border-width: 1; -fx-padding: 6;"
+                               GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                    <rowConstraints>
+                        <RowConstraints/>
+                        <RowConstraints/>
+                        <RowConstraints/>
+                        <RowConstraints/>
+                    </rowConstraints>
                 </GridPane>
+
+                <!-- أزرار الإجراءات (عمودي لتكون واضحة) -->
+                <VBox prefHeight="220.0" prefWidth="436.0" spacing="10" style="-fx-padding: 8 0 0 0;">
+                    <Button fx:id="addButton" maxWidth="Infinity" onAction="#addProduct" prefHeight="40.0"
+                            prefWidth="436.0"
+                            style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10; -fx-font-weight: bold;"
+                            text="إضافة منتج"/>
+                    <Button fx:id="updateButton" maxWidth="Infinity" onAction="#updateProduct"
+                            style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10; -fx-font-weight: bold;"
+                            text="تعديل"/>
+                    <Button fx:id="deleteButton" maxWidth="Infinity" onAction="#deleteProduct"
+                            style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10; -fx-font-weight: bold;"
+                            text="حذف"/>
+                </VBox>
+
+                <!-- مسافة سفلية لتجميل اليمين -->
+                <Region VBox.vgrow="ALWAYS"/>
             </VBox>
-
-        </VBox>
-    </center>
-
-    <!-- Bottom: الأزرار -->
-    <bottom>
-        <HBox spacing="15" alignment="CENTER"
-              style="-fx-background-color: white; -fx-padding: 20; -fx-border-color: #ddd; -fx-border-width: 1 0 0 0;">
-
-            <Button fx:id="addButton"
-                    text="➕ إضافة منتج"
-                    onAction="#addProduct"
-                    style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10 30; -fx-font-weight: bold;"/>
-
-            <Button fx:id="updateButton"
-                    text="✏️ تعديل"
-                    onAction="#updateProduct"
-                    style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10 30; -fx-font-weight: bold;"/>
-
-            <Button fx:id="deleteButton"
-                    text="🗑 حذف"
-                    onAction="#deleteProduct"
-                    style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10 30; -fx-font-weight: bold;"/>
-
-            <Button text="🔄 تحديث"
-                    onAction="#handleRefresh"
-                    style="-fx-background-color: #9E9E9E; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10 30; -fx-font-weight: bold;"/>
         </HBox>
-    </bottom>
-
+    </center>
 </BorderPane>

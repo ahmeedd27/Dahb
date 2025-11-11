@@ -19,7 +19,7 @@
             <Label text="🍽 شاشة البيع - المطعم"
                    style="-fx-font-size: 24px; -fx-text-fill: white; -fx-font-weight: bold;"/>
             <Region HBox.hgrow="ALWAYS"/>
-            <Button text="🔄 تحديث المنتجات"
+            <Button text="تحديث المنتجات"
                     onAction="#handleRefresh"
                     style="-fx-background-color: white; -fx-text-fill: #4CAF50; -fx-font-weight: bold; -fx-padding: 8 20;"/>
         </HBox>
@@ -46,7 +46,7 @@
 
             <!-- Right: العربة -->
             <VBox spacing="15" style="-fx-padding: 15; -fx-background-color: white;">
-                <Label text="🛒 عربة الطلبات"
+                <Label text="عربة الطلبات"
                        style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
 
                 <TableView fx:id="cartTable"
@@ -72,18 +72,18 @@
                 <!-- الأزرار -->
                 <HBox spacing="10" alignment="CENTER">
                     <Button fx:id="checkoutButton"
-                            text="✅ إتمام البيع"
+                            text="إتمام البيع"
                             onAction="#handleCheckout"
                             prefWidth="200"
                             style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 12 25; -fx-font-weight: bold;"/>
 
                     <Button fx:id="printButton"
-                            text="🖨 طباعة"
+                            text="طباعة"
                             onAction="#handlePrint"
                             prefWidth="120"
                             style="-fx-background-color: #1976D2; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 12 20; -fx-font-weight: bold;"/>
 
-                    <Button text="🗑 تفريغ العربة"
+                    <Button text="تفريغ العربة"
                             onAction="#handleClearCart"
                             prefWidth="150"
                             style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 12 25; -fx-font-weight: bold;"/>

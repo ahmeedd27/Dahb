@@ -80,9 +80,11 @@ public class LoginController {
 
                     Session.setUser(user);
 
-                    // الانتقال للشاشة الرئيسية - أي خطأ هنا يعرض رسالة مهندلة أدناه
+                    // الانتقال للشاشة الرئيسية
                     try {
                         SceneRouter.switchTo("/org/example/store/unified-tabs.fxml");
+                        // هنا نطلب من SceneRouter عمل maximize تلقائياً
+                        SceneRouter.maximize();
                     } catch (Exception e) {
                         // لو حدث خطأ أثناء الانتقال للمشهد
                         System.err.println("Scene switch error: " + e.getMessage());

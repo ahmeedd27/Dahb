@@ -33,7 +33,7 @@ public class HelloApplication extends Application {
             scene = new Scene(fxmlLoader.load(), 1000, 700);
         }
 
-        stage.setTitle("محل السمري للملابس");
+        stage.setTitle("مطعم دهب");
         stage.setScene(scene);
         stage.setResizable(true);
         stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/assets/Icon.png"))));
