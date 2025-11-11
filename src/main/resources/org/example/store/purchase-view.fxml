@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.ImageView?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.store.controller.PurchaseViewController"
+            nodeOrientation="RIGHT_TO_LEFT"
+            prefHeight="800.0" prefWidth="1200.0"
+            style="-fx-background-color: #f5f5f5;">
+
+    <!-- Top: العنوان -->
+    <top>
+        <HBox alignment="CENTER_RIGHT" spacing="20"
+              style="-fx-background-color: #4CAF50; -fx-padding: 15;">
+            <Label text="🍽 شاشة البيع - المطعم"
+                   style="-fx-font-size: 24px; -fx-text-fill: white; -fx-font-weight: bold;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="🔄 تحديث المنتجات"
+                    onAction="#handleRefresh"
+                    style="-fx-background-color: white; -fx-text-fill: #4CAF50; -fx-font-weight: bold; -fx-padding: 8 20;"/>
+        </HBox>
+    </top>
+
+    <!-- Center: المنتجات والعربة -->
+    <center>
+        <SplitPane dividerPositions="0.6" style="-fx-background-color: transparent;">
+
+            <!-- Left: قائمة المنتجات -->
+            <VBox spacing="10" style="-fx-padding: 15;">
+                <Label text="المنتجات المتاحة"
+                       style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+                <ScrollPane fitToWidth="true" style="-fx-background-color: white; -fx-border-radius: 10;">
+                    <!-- تم إصلاح الـ padding هنا بوضعه في الـ style بدلاً من الصيغة الرقمية -->
+                    <FlowPane fx:id="productsPane"
+                              hgap="15" vgap="15"
+                              style="-fx-background-color: white; -fx-padding: 15;"
+                              prefWrapLength="800">
+                    </FlowPane>
+                </ScrollPane>
+            </VBox>
+
+            <!-- Right: العربة -->
+            <VBox spacing="15" style="-fx-padding: 15; -fx-background-color: white;">
+                <Label text="🛒 عربة الطلبات"
+                       style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+                <TableView fx:id="cartTable"
+                           VBox.vgrow="ALWAYS"
+                           style="-fx-border-color: #ddd; -fx-border-radius: 10;">
+                    <columns>
+                        <TableColumn fx:id="nameCol" text="المنتج" prefWidth="150"/>
+                        <TableColumn fx:id="priceCol" text="السعر" prefWidth="80"/>
+                        <TableColumn fx:id="quantityCol" text="الكمية" prefWidth="150"/>
+                        <TableColumn fx:id="subtotalCol" text="المجموع" prefWidth="90"/>
+                        <TableColumn fx:id="actionsCol" text="حذف" prefWidth="60"/>
+                    </columns>
+                </TableView>
+
+                <!-- الإجمالي -->
+                <HBox alignment="CENTER" spacing="15"
+                      style="-fx-background-color: #E8F5E9; -fx-padding: 15; -fx-border-radius: 10; -fx-background-radius: 10;">
+                    <Label fx:id="totalLabel"
+                           text="الإجمالي: 0.00 جنيه"
+                           style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #2E7D32;"/>
+                </HBox>
+
+                <!-- الأزرار -->
+                <HBox spacing="10" alignment="CENTER">
+                    <Button fx:id="checkoutButton"
+                            text="✅ إتمام البيع"
+                            onAction="#handleCheckout"
+                            prefWidth="200"
+                            style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 12 25; -fx-font-weight: bold;"/>
+
+                    <Button fx:id="printButton"
+                            text="🖨 طباعة"
+                            onAction="#handlePrint"
+                            prefWidth="120"
+                            style="-fx-background-color: #1976D2; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 12 20; -fx-font-weight: bold;"/>
+
+                    <Button text="🗑 تفريغ العربة"
+                            onAction="#handleClearCart"
+                            prefWidth="150"
+                            style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 12 25; -fx-font-weight: bold;"/>
+                </HBox>
+            </VBox>
+
+        </SplitPane>
+    </center>
+
+</BorderPane>

@@ -1,0 +1,99 @@
+.root {
+    -fx-font-family: "Cairo", "Segoe UI", sans-serif;
+    -fx-background-color: linear-gradient(to bottom, #f5f8fa, #eaf1f6);
+}
+
+/* ==== العناوين ==== */
+.main-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #003366;
+}
+
+.section-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #004080;
+}
+
+/* ==== الحقول ==== */
+.text-field, .search-field {
+    -fx-font-size: 14px;
+    -fx-padding: 8 12;
+    -fx-background-color: white;
+    -fx-border-color: #90caf9;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}
+
+.text-field:focused, .search-field:focused {
+    -fx-border-color: #2196F3;
+}
+
+/* ==== الجدول ==== */
+.product-table {
+    -fx-background-color: white;
+    -fx-border-color: #bbdefb;
+    -fx-border-radius: 8;
+}
+
+.product-table .column-header {
+    -fx-background-color: #e3f2fd;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-text-fill: #0d47a1;
+}
+
+/* ==== الأزرار ==== */
+.action-button {
+    -fx-background-color: #2196F3;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-background-radius: 8;
+    -fx-padding: 8 18;
+    -fx-cursor: hand;
+}
+
+.action-button:hover {
+    -fx-background-color: #1976D2;
+}
+
+/* زر خاص (برتقالي) */
+.button-orange {
+    -fx-background-color: #FF9800;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+}
+
+.button-orange:hover {
+    -fx-background-color: #fb8c00;
+}
+
+/* ==== زر توليد الباركود ==== */
+.generate-barcode-button {
+    -fx-font-size: 12px;
+    -fx-padding: 5 10;
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-background-radius: 4;
+}
+
+.generate-barcode-button:hover {
+    -fx-background-color: #43a047;
+}
+
+/* ==== اللابلز ==== */
+.label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333;
+}
+
+/* ==== الـ Header ==== */
+.header-section {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #bbdefb;
+    -fx-border-width: 0 0 2 0;
+    -fx-padding: 15;
+}

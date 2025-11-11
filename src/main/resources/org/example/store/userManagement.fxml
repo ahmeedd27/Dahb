@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="20" alignment="TOP_CENTER" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.example.store.controller.UserManagementController"
+      stylesheets="@user-managment.css" prefWidth="1000" prefHeight="700">
+
+    <padding>
+        <Insets top="30" right="30" bottom="30" left="30"/>
+    </padding>
+
+    <Label text="إدارة المستخدمين" styleClass="header-label"/>
+
+    <TableView fx:id="userTable" prefHeight="300" maxWidth="800">
+        <columns>
+            <TableColumn fx:id="roleCol" text="الصلاحيه" prefWidth="400"/>
+            <TableColumn fx:id="usernameCol" text="اسم المستخدم" prefWidth="400"/>
+        </columns>
+    </TableView>
+
+    <HBox spacing="15" alignment="CENTER" maxWidth="800">
+        <TextField fx:id="usernameField" promptText="اسم المستخدم" HBox.hgrow="ALWAYS"/>
+        <PasswordField fx:id="passwordField" promptText="كلمة المرور" HBox.hgrow="ALWAYS"/>
+        <ComboBox fx:id="roleCombo" promptText="الصلاحيه" prefWidth="150"/>
+    </HBox>
+
+    <HBox spacing="15" alignment="CENTER" maxWidth="800">
+        <Button text="إضافة" onAction="#handleAddUser" styleClass="action-button"/>
+        <Button text="تعديل" onAction="#handleUpdateUser" styleClass="action-button"/>
+        <Button text="حذف" onAction="#handleDeleteUser" styleClass="action-button"/>
+        <Button text="بحث" onAction="#handleSearchUser" styleClass="action-button"/>
+    </HBox>
+
+    <Label fx:id="statusLabel" styleClass="status-label"/>
+
+    <HBox spacing="20" alignment="CENTER" styleClass="nav-bar" maxWidth="800">
+        <Button text="تسجيل دخول" onAction="#goToLogin" styleClass="nav-button"/>
+    </HBox>
+
+</VBox>

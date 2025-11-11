@@ -1,0 +1,54 @@
+/* Style for the VBox (main container) */
+VBox {
+    -fx-background-color: #f4f4f4; /* Light gray background */
+    -fx-alignment: center; /* Center all children */
+    -fx-padding: 20; /* Padding around the content */
+}
+
+/* Style for TextFields (uuidField and keyField) */
+TextField {
+    -fx-pref-width: 300; /* Width of the text fields */
+    -fx-font-size: 14; /* Font size */
+    -fx-font-family: "Arial"; /* Font family */
+    -fx-background-color: #ffffff; /* White background */
+    -fx-border-color: #cccccc; /* Light gray border */
+    -fx-border-radius: 5; /* Rounded corners */
+    -fx-background-radius: 5; /* Rounded background */
+    -fx-padding: 8; /* Inner padding */
+    -fx-text-fill: #333333; /* Dark text color */
+    -fx-alignment: center-right; /* Right-align text for Arabic */
+}
+
+/* Style for the Button (activateButton) */
+Button {
+    -fx-pref-width: 100; /* Button width */
+    -fx-font-size: 14; /* Font size */
+    -fx-font-family: "Arial"; /* Font family */
+    -fx-background-color: #4CAF50; /* Green background */
+    -fx-text-fill: #ffffff; /* White text */
+    -fx-background-radius: 5; /* Rounded corners */
+    -fx-cursor: hand; /* Hand cursor on hover */
+}
+
+/* Hover effect for the Button */
+Button:hover {
+    -fx-background-color: #45a049; /* Darker green on hover */
+}
+
+/* Style for the Label (statusLabel) */
+Label {
+    -fx-font-size: 14; /* Font size */
+    -fx-font-family: "Arial"; /* Font family */
+    -fx-text-fill: #333333; /* Dark text color */
+    -fx-alignment: center-right; /* Right-align text for Arabic */
+}
+
+/* Specific style for success message */
+Label:success {
+    -fx-text-fill: #4CAF50; /* Green for success */
+}
+
+/* Specific style for error message */
+Label:error {
+    -fx-text-fill: #ff0000; /* Red for error */
+}

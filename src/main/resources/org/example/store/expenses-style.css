@@ -1,0 +1,90 @@
+/* ----------- Root & General ----------- */
+.root {
+    -fx-font-family: "Cairo", "Segoe UI", sans-serif;
+    -fx-background-color: #f7f9fc;
+    -fx-font-size: 14px;
+}
+
+/* ----------- Header ----------- */
+.header-section {
+    -fx-background-color: linear-gradient(to left, #4facfe, #00f2fe);
+    -fx-background-radius: 0 0 10 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 8,0,0,3);
+}
+.main-title {
+    -fx-text-fill: white;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+}
+
+/* ----------- Table ----------- */
+.expense-table {
+    -fx-background-color: white;
+    -fx-border-color: #e0e6ed;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 6,0,0,2);
+}
+
+.expense-table .column-header {
+    -fx-background-color: #f1f4f9;
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER;
+}
+
+.expense-table .table-row-cell:selected {
+    -fx-background-color: #4facfe;
+    -fx-text-fill: white;
+}
+
+/* ----------- Form Grid ----------- */
+.form-grid {
+    -fx-background-color: white;
+    -fx-padding: 15;
+    -fx-border-color: #e0e6ed;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5,0,0,1);
+}
+
+.text-field {
+    -fx-background-color: #f9fbfd;
+    -fx-background-radius: 6;
+    -fx-border-color: #d6dce5;
+    -fx-border-radius: 6;
+    -fx-padding: 6;
+}
+.text-field:focused {
+    -fx-border-color: #4facfe;
+    -fx-background-color: #ffffff;
+}
+
+/* ----------- Buttons ----------- */
+.action-button {
+    -fx-background-color: linear-gradient(to bottom, #4facfe, #00c6ff);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 25;
+    -fx-padding: 8 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5,0,0,1);
+}
+.action-button:hover {
+    -fx-background-color: linear-gradient(to bottom, #3a8dde, #00aee6);
+}
+
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #4facfe;
+    -fx-font-weight: bold;
+    -fx-underline: true;
+}
+.nav-button:hover {
+    -fx-text-fill: #007acc;
+}
+
+/* ----------- Footer ----------- */
+.total-label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+}

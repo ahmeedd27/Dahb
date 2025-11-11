@@ -1,0 +1,128 @@
+/* ======= Theme: Modern Green-Blue POS ======= */
+
+.root {
+    -fx-font-family: "Cairo", "Segoe UI", sans-serif;
+    -fx-background-color: linear-gradient(to bottom, #e9f5f2, #dfe9f3);
+}
+
+/* ======= Header ======= */
+.header-bar {
+    -fx-padding: 15 20;
+    -fx-background-color: linear-gradient(to right, #0078D7, #009688);
+    -fx-background-radius: 0 0 12 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);
+}
+
+.nav-button {
+    -fx-background-color: rgba(255,255,255,0.15);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 8 16;
+    -fx-border-color: rgba(255,255,255,0.3);
+    -fx-border-radius: 8;
+}
+
+.nav-button:hover {
+    -fx-background-color: rgba(255,255,255,0.3);
+}
+
+/* ======= Search Section ======= */
+.search-section {
+    -fx-background-color: #ffffffdd;
+    -fx-padding: 18;
+    -fx-background-radius: 12;
+    -fx-border-color: #b0d4c1;
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 6, 0, 0, 2);
+}
+
+.barcode-input {
+    -fx-font-size: 14px;
+    -fx-padding: 8 12;
+    -fx-border-color: #99c7b2;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-background-color: white;
+}
+
+.barcode-input:focused {
+    -fx-border-color: #28a745;
+    -fx-effect: dropshadow(gaussian, #28a74544, 6, 0, 0, 0);
+}
+
+/* ======= Product Table ======= */
+.product-table {
+    -fx-background-color: white;
+    -fx-border-color: #b0d4c1;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 6, 0, 0, 1);
+}
+
+.product-table .column-header {
+    -fx-background-color: linear-gradient(to bottom, #cce3dc, #b5d1c5);
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a3c34;
+    -fx-border-color: transparent;
+}
+
+.product-table .table-row-cell:filled:selected {
+    -fx-background-color: #a2d5c6;
+}
+
+/* ======= Footer ======= */
+.footer-bar {
+    -fx-padding: 15 20;
+    -fx-background-color: #ffffffdd;
+    -fx-border-color: #b0d4c1;
+    -fx-border-width: 1 0 0 0;
+    -fx-background-radius: 12 12 0 0;
+}
+
+.total-label {
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a3c34;
+}
+
+/* ======= Buttons ======= */
+.checkout-button {
+    -fx-background-color: linear-gradient(to right, #28a745, #239b56);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 1);
+}
+
+.checkout-button:hover {
+    -fx-background-color: linear-gradient(to right, #34d058, #2ecc71);
+}
+
+.print-button {
+    -fx-background-color: linear-gradient(to right, #343a40, #495057);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-background-radius: 8;
+}
+
+.print-button:hover {
+    -fx-background-color: linear-gradient(to right, #212529, #343a40);
+}
+
+/* ======= ComboBox & TextField General ======= */
+.combo-box, .text-field {
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: #99c7b2;
+}
+
+.combo-box:focused, .text-field:focused {
+    -fx-border-color: #28a745;
+}
