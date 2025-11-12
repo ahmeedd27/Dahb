@@ -42,7 +42,7 @@ public class InvoicePrinter {
         StringBuilder content = new StringBuilder();
 
         // بناء محتوى الفاتورة - كل حاجة في النص
-        content.append("==========================\n");
+
         content.append(centerText("مطعم دهب       ", 32)).append("\n");
         content.append("==========================\n");
         content.append(centerText("فاتورة الشراء رقم      " + invoiceNumber, 32)).append("\n");
@@ -86,7 +86,9 @@ public class InvoicePrinter {
         content.append(centerText(String.format("الإجمالي: %.2f جنيه", totalAfterDiscount), 32)).append("\n");
         content.append("==========================\n");
         content.append(centerText("شكراً لزيارتكم       ", 32)).append("\n");
+        content.append("==========================\n");
         content.append(centerText("دسوق - شارع المحرقه امام الحج خميس برل", 32)).append("\n");
+        content.append("==========================\n");
         content.append(centerText("     01221005954         ", 32));
 
         saveToTextFile(content.toString(), invoiceNumber);
