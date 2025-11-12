@@ -43,7 +43,7 @@ public class UnifiedTabController {
 
             new TabDefinition("اداره المنتجات", "/org/example/store/product-view.fxml",
                     Role.ADMIN, Role.MANAGER),
-            new TabDefinition("النثريات", "/org/example/store/expenses.fxml",
+            new TabDefinition("المصروفات", "/org/example/store/expenses.fxml",
                     Role.ADMIN, Role.MANAGER, Role.CASHIER),
             new TabDefinition("اداره المستخدمين", "/org/example/store/userManagement.fxml",
                     Role.ADMIN)

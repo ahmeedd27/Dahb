@@ -11,6 +11,7 @@ import org.example.store.utils.SceneRouter;
 
 
 import java.time.LocalDate;
+import java.util.stream.Collectors;
 
 public class ExpensesController {
     @FXML
@@ -26,6 +27,8 @@ public class ExpensesController {
     @FXML
     private TableColumn<Expense, Number> amountColumn;
     @FXML
+    private DatePicker datePicker;
+    @FXML
     private TableColumn<Expense, LocalDate> dateColumn;
     @FXML
     private Label totalLabel;
@@ -34,11 +37,27 @@ public class ExpensesController {
 
     @FXML
     public void initialize() {
-        idColumn.setCellValueFactory(data -> data.getValue().idProperty());
+        //idColumn.setCellValueFactory(data -> data.getValue().idProperty());
+        idColumn.setCellFactory(col -> new TableCell<Expense, Number>() {
+            @Override
+            protected void updateItem(Number item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+                    int idx = getIndex(); // index بحسب العرض الحالي
+                    if (idx >= 0 && idx < expenseTable.getItems().size()) {
+                        setText(String.valueOf(idx + 1)); // عرض من 1
+                    } else {
+                        setText(null);
+                    }
+                }
+            }
+        });
         nameColumn.setCellValueFactory(data -> data.getValue().nameProperty());
         amountColumn.setCellValueFactory(data -> data.getValue().amountProperty());
         dateColumn.setCellValueFactory(data -> data.getValue().expenseDateProperty());
-
+        idColumn.setSortable(false);
         loadExpenses();
 
         expenseTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSel, newSel) -> {
@@ -47,6 +66,8 @@ public class ExpensesController {
                 amountField.setText(String.valueOf(newSel.getAmount()));
             }
         });
+        // اختياري: نعيّن قيمة افتراضية ل-datepicker اليوم
+        datePicker.setValue(null);
     }
 
     private void loadExpenses() {
@@ -149,7 +170,30 @@ public class ExpensesController {
             expenseList = FXCollections.observableArrayList(ExpenseDAO.getExpensesSince(fromDate));
             expenseTable.setItems(expenseList);
             updateTotal();
+            // نمسح اختيار الـ DatePicker عشان واضح أن الفلترة قائمة بواسطة ComboBox
+            datePicker.setValue(null);
         }
+    }
+
+    @FXML
+    private void applyDateFilter() {
+        LocalDate chosen = datePicker.getValue();
+        if (chosen == null) {
+            showAlert("اختر تاريخًا للبحث");
+            return;
+        }
+
+        // هنا نفلتر بيانات من DAO محليًا — لو عندك دالة DAO جاهزة (مثلاً getExpensesOn) ممكن تستعملها بدلاً من الفلترة هنا
+        expenseList = FXCollections.observableArrayList(
+                ExpenseDAO.getAllExpenses().stream()
+                        .filter(exp -> chosen.equals(exp.getExpenseDate()))
+                        .collect(Collectors.toList())
+        );
+        expenseTable.setItems(expenseList);
+        updateTotal();
+
+        // نلغي اختيار ComboBox حتى ما يحصل لبس
+        filterComboBox.setValue(null);
     }
 
     private void clearFields() {
@@ -168,5 +212,11 @@ public class ExpensesController {
 
     public void goHome() {
         SceneRouter.switchTo("/org/example/store/main-view.fxml");
+    }
+
+    public void applyRefresh() {
+        loadExpenses();
+        datePicker.setValue(null);
+        filterComboBox.setValue(null);
     }
 }

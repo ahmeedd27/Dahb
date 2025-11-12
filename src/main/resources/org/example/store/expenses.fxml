@@ -20,7 +20,7 @@
             <padding>
                 <Insets top="15" right="15" bottom="15" left="15"/>
             </padding>
-            <Label text="النثريات" styleClass="main-title"/>
+            <Label text="سجل المصروفات" styleClass="main-title"/>
         </VBox>
     </top>
 
@@ -43,12 +43,17 @@
                     </items>
                 </ComboBox>
                 <Button text="تطبيق" onAction="#applyFilter"/>
+                <Button text="تحديث" onAction="#applyRefresh"/>
+                <!-- DatePicker و زر البحث بالتاريخ -->
+                <Label text="بحث بتاريخ:"/>
+                <DatePicker fx:id="datePicker" promptText="اختر التاريخ"/>
+                <Button text="بحث بالتاريخ" onAction="#applyDateFilter"/>
             </HBox>
             <!-- Table -->
             <TableView fx:id="expenseTable" prefHeight="400" styleClass="expense-table">
                 <columns>
-                    <TableColumn fx:id="idColumn" text="رقم النثريه" prefWidth="100"/>
-                    <TableColumn fx:id="nameColumn" text="اسم النثريه" prefWidth="200"/>
+                    <TableColumn fx:id="idColumn" text="رقم المصروف" prefWidth="100"/>
+                    <TableColumn fx:id="nameColumn" text="اسم المصروف" prefWidth="200"/>
                     <TableColumn fx:id="amountColumn" text="القيمة" prefWidth="100"/>
                     <TableColumn fx:id="dateColumn" text="التاريخ" prefWidth="150"/>
                 </columns>
@@ -61,7 +66,7 @@
                 </padding>
 
                 <!-- Row 1 -->
-                <Label text="اسم النثريه:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <Label text="اسم المصروف:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
                 <TextField fx:id="nameField" promptText="ادخل الاسم" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
 
                 <Label text="القيمة:" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
