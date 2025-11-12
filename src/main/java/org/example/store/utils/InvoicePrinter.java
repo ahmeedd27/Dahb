@@ -43,7 +43,7 @@ public class InvoicePrinter {
 
         // بناء محتوى الفاتورة - كل حاجة في النص
         content.append("==========================\n");
-        content.append(centerText("مطعم دهب يرحب بكم    \uD83D\uDC99", 32)).append("\n");
+        content.append(centerText("مطعم دهب       ", 32)).append("\n");
         content.append("==========================\n");
         content.append(centerText("فاتورة الشراء رقم      " + invoiceNumber, 32)).append("\n");
         content.append("==========================\n");
@@ -83,22 +83,7 @@ public class InvoicePrinter {
                 (calculatedDiscountAmount / totalBeforeDiscount) * 100 : 0;
 
         content.append("==========================\n");
-        content.append(centerText(String.format("المجموع: %.2f جنيه", totalBeforeDiscount), 32)).append("\n");
-
-        if (calculatedDiscountAmount > 0) {
-            content.append(centerText(String.format("الخصم (%.0f%%): %.2f- جنيه",
-                    discountPercentage, calculatedDiscountAmount), 32)).append("\n");
-        }
-
         content.append(centerText(String.format("الإجمالي: %.2f جنيه", totalAfterDiscount), 32)).append("\n");
-
-        if (paidAmount > 0) {
-            content.append(centerText(String.format("المدفوع: %.2f جنيه", paidAmount), 32)).append("\n");
-        }
-        if (remainingAmount > 0) {
-            content.append(centerText(String.format("الباقي: %.2f جنيه", remainingAmount), 32)).append("\n");
-        }
-
         content.append("==========================\n");
         content.append(centerText("شكراً لزيارتكم       ", 32)).append("\n");
         content.append(centerText("دسوق - شارع المحرقه امام الحج خميس برل", 32)).append("\n");
