@@ -40,8 +40,9 @@ public class UnifiedTabController {
     private static final List<TabDefinition> ALL_TABS = Arrays.asList(
             new TabDefinition("البيع", "/org/example/store/purchase-view.fxml",
                     Role.ADMIN, Role.MANAGER, Role.CASHIER),
-
             new TabDefinition("اداره المنتجات", "/org/example/store/product-view.fxml",
+                    Role.ADMIN, Role.MANAGER),
+            new TabDefinition("الفواتير", "/org/example/store/invoices-view.fxml",
                     Role.ADMIN, Role.MANAGER),
             new TabDefinition("المصروفات", "/org/example/store/expenses.fxml",
                     Role.ADMIN, Role.MANAGER, Role.CASHIER),

@@ -1,0 +1,72 @@
+.root {
+    -fx-font-family: "Cairo", "Segoe UI", sans-serif;
+    -fx-background-color: linear-gradient(to bottom, #fbfcfe, #eef6fb);
+}
+
+/* Header */
+.header-section {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #d0e7fb;
+    -fx-border-width: 0 0 2 0;
+    -fx-padding: 12;
+}
+
+.main-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #012f4a;
+}
+
+/* Table visual */
+.product-table {
+    -fx-background-color: white;
+    -fx-border-color: #e3f2fd;
+    -fx-border-radius: 6;
+    -fx-padding: 8;
+}
+
+/* جعل الخلايا متوسطة ومحاذاة */
+.product-table .table-cell {
+    -fx-alignment: center; /* يحاول توسيط محتوى الخلية */
+}
+
+/* رأس العمود */
+.product-table .column-header {
+    -fx-background-color: linear-gradient(#e8f4ff, #d7ecff);
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-text-fill: #0d47a1;
+    -fx-alignment: center;
+}
+
+/* صفوف متبادلة (zebra) */
+.table-row-cell:odd {
+    -fx-background-color: #ffffff;
+}
+.table-row-cell:even {
+    -fx-background-color: #fbfdff;
+}
+
+/* الأزرار */
+.action-button {
+    -fx-background-color: #1976D2;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 6 12;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+
+/* زر التحديث/بحث */
+.button {
+    -fx-background-radius: 6;
+    -fx-padding: 6 10;
+}
+
+/* الملصقات الناتج */
+.total-label {
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-text-fill: #0d47a1;
+    -fx-padding: 0 8 0 8;
+}

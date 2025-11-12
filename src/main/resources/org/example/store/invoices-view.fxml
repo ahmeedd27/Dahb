@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.collections.FXCollections?>
+
+<?import java.lang.String?>
+<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.store.controller.InvoicesController"
+            prefWidth="1000" prefHeight="700" nodeOrientation="RIGHT_TO_LEFT" stylesheets="@invoices-style.css">
+
+
+    <top>
+        <VBox spacing="8" styleClass="header-section">
+            <padding>
+                <Insets top="12" right="12" bottom="12" left="12"/>
+            </padding>
+            <Label text="سجل الفواتير" styleClass="main-title"/>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox spacing="12">
+            <padding>
+                <Insets top="12" right="12" bottom="12" left="12"/>
+            </padding>
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="عرض:"/>
+                <ComboBox fx:id="rangeCombo" promptText="اختر المدى">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="اليوم"/>
+                            <String fx:value="الأسبوع"/>
+                            <String fx:value="الشهر"/>
+                            <String fx:value="الكل"/>
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+                <Button text="تطبيق" onAction="#applyRangeFilter" styleClass="action-button"/>
+
+
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label text="اختر يوم:"/>
+                <DatePicker fx:id="datePicker" promptText="اختر التاريخ"/>
+                <Button text="بحث بالتاريخ" onAction="#applyDateFilter" styleClass="action-button"/>
+                <Button text="تحديث" onAction="#applyRefresh" styleClass="action-button"/>
+                <Button text="إحصائيات" onAction="#openStatistics" styleClass="action-button"/>
+            </HBox>
+
+            <TableView fx:id="saleTable" VBox.vgrow="ALWAYS" styleClass="product-table">
+                <columns>
+                    <TableColumn fx:id="saleIdCol" text="رقم الفاتورة" prefWidth="120"/>
+                    <TableColumn fx:id="saleDateCol" text="التاريخ والوقت" prefWidth="300"/>
+                    <TableColumn fx:id="saleTotalCol" text="الإجمالي" prefWidth="150"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            <Label text="مجموع الفواتير:"/>
+            <Label fx:id="pageTotalLabel" text="0.00" styleClass="total-label"/>
+        </HBox>
+    </bottom>
+</BorderPane>
