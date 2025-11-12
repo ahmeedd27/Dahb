@@ -3,6 +3,7 @@ package org.example.store.controller;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.geometry.NodeOrientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -19,13 +20,20 @@ import java.time.format.DateTimeFormatter;
 
 public class InvoicesController {
 
-    @FXML private ComboBox<String> rangeCombo;
-    @FXML private DatePicker datePicker;
-    @FXML private TableView<SaleRow> saleTable;
-    @FXML private TableColumn<SaleRow, Integer> saleIdCol;
-    @FXML private TableColumn<SaleRow, String> saleDateCol;
-    @FXML private TableColumn<SaleRow, Double> saleTotalCol;
-    @FXML private Label pageTotalLabel;
+    @FXML
+    private ComboBox<String> rangeCombo;
+    @FXML
+    private DatePicker datePicker;
+    @FXML
+    private TableView<SaleRow> saleTable;
+    @FXML
+    private TableColumn<SaleRow, Integer> saleIdCol;
+    @FXML
+    private TableColumn<SaleRow, String> saleDateCol;
+    @FXML
+    private TableColumn<SaleRow, Double> saleTotalCol;
+    @FXML
+    private Label pageTotalLabel;
 
     private ObservableList<SaleRow> sales = FXCollections.observableArrayList();
     private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"); // عرض: يوم-شهر-سنة ساعة:دقيقة
@@ -217,7 +225,6 @@ public class InvoicesController {
         recalcPageTotal();
     }
 
-    // نافذة تفاصيل الفاتورة (كما عندك) — لم يتغير منطقها، استخدم نفس الدالة من النسخة السابقة
     private void showSaleDetails(int saleId) {
         TableView<SaleItemRow> itemsTable = new TableView<>();
         TableColumn<SaleItemRow, String> nameCol = new TableColumn<>("اسم المنتج");
@@ -230,8 +237,14 @@ public class InvoicesController {
         priceCol.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("unitPrice"));
         totalCol.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("totalAmount"));
 
+        // محاذاة الخلايا (مركزي) + اجعل الجدول يستخدم اتجاه الواجهة من اليمين لليسار
+        nameCol.setStyle("-fx-alignment: CENTER;");
+        qtyCol.setStyle("-fx-alignment: CENTER;");
+        priceCol.setStyle("-fx-alignment: CENTER;");
+        totalCol.setStyle("-fx-alignment: CENTER;");
         itemsTable.getColumns().addAll(nameCol, qtyCol, priceCol, totalCol);
         itemsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        itemsTable.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 
         ObservableList<SaleItemRow> items = FXCollections.observableArrayList();
         String sql = "SELECT si.quantity, si.unit_price, si.total_amount, p.name " +
@@ -250,21 +263,42 @@ public class InvoicesController {
                     items.add(new SaleItemRow(pname, q, up, ta));
                 }
             }
+
+            // جلب إجمالي الفاتورة من جدول sales (أفضل من جمع العناصر لأن الحقل متاح)
+            double saleTotal = 0.0;
+            try (PreparedStatement psTotal = conn.prepareStatement("SELECT total FROM sales WHERE id = ?")) {
+                psTotal.setInt(1, saleId);
+                try (ResultSet rs2 = psTotal.executeQuery()) {
+                    if (rs2.next()) saleTotal = rs2.getDouble("total");
+                }
+            }
+
+            itemsTable.setItems(items);
+
+            Label title = new Label("تفاصيل الفاتورة: " + saleId);
+            title.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+
+            Label totalLabel = new Label(String.format("إجمالي الفاتورة: %.2f", saleTotal));
+            totalLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 13px;");
+            // نجعل اللابل على اليمين داخل الـ VBox
+            totalLabel.setAlignment(javafx.geometry.Pos.CENTER_RIGHT);
+            totalLabel.setMaxWidth(Double.MAX_VALUE);
+
+            VBox root = new VBox(10, title, itemsTable, totalLabel);
+            root.setPadding(new javafx.geometry.Insets(10));
+            // اجعل النافذة تتصرف من اليمين لليسار
+            root.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+
+            Stage dlg = new Stage();
+            dlg.initModality(Modality.APPLICATION_MODAL);
+            dlg.setTitle("تفاصيل الفاتورة " + saleId);
+            dlg.setScene(new Scene(root, 600, 400));
+            dlg.showAndWait();
+
         } catch (SQLException ex) {
             ex.printStackTrace();
             showAlert("خطأ", "فشل في تحميل تفاصيل الفاتورة: " + ex.getMessage());
-            return;
         }
-
-        itemsTable.setItems(items);
-
-        VBox root = new VBox(10, new Label("تفاصيل الفاتورة: " + saleId), itemsTable);
-        root.setPadding(new javafx.geometry.Insets(10));
-        Stage dlg = new Stage();
-        dlg.initModality(Modality.APPLICATION_MODAL);
-        dlg.setTitle("تفاصيل الفاتورة " + saleId);
-        dlg.setScene(new Scene(root, 600, 400));
-        dlg.showAndWait();
     }
 
     @FXML
@@ -310,14 +344,24 @@ public class InvoicesController {
         prodCol.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("productName"));
         cntCol.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("count"));
 
+        // محاذاة الخلايا ومظهر RTL
+        prodCol.setStyle("-fx-alignment: CENTER;");
+        cntCol.setStyle("-fx-alignment: CENTER;");
         table.getColumns().addAll(prodCol, cntCol);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        table.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 
         Stage dlg = new Stage();
         dlg.initModality(Modality.APPLICATION_MODAL);
         dlg.setTitle("إحصائيات المبيعات — " + date.toString());
-        VBox root = new VBox(10, new Label("الإجمالي حسب الصنف للتاريخ: " + date.toString()), table);
+
+        Label title = new Label("الإجمالي حسب الصنف للتاريخ: " + date.toString());
+        title.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+
+        VBox root = new VBox(10, title, table);
         root.setPadding(new javafx.geometry.Insets(10));
+        root.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+
         dlg.setScene(new Scene(root, 500, 400));
         dlg.showAndWait();
     }
@@ -335,12 +379,24 @@ public class InvoicesController {
         private final int id;
         private final String dateTime;
         private final double total;
+
         public SaleRow(int id, String dateTime, double total) {
-            this.id = id; this.dateTime = dateTime; this.total = total;
+            this.id = id;
+            this.dateTime = dateTime;
+            this.total = total;
         }
-        public int getId(){return id;}
-        public String getDateTime(){return dateTime;}
-        public double getTotal(){return total;}
+
+        public int getId() {
+            return id;
+        }
+
+        public String getDateTime() {
+            return dateTime;
+        }
+
+        public double getTotal() {
+            return total;
+        }
     }
 
     public static class SaleItemRow {
@@ -348,20 +404,46 @@ public class InvoicesController {
         private final int quantity;
         private final double unitPrice;
         private final double totalAmount;
-        public SaleItemRow(String productName, int quantity, double unitPrice, double totalAmount){
-            this.productName = productName; this.quantity = quantity; this.unitPrice = unitPrice; this.totalAmount = totalAmount;
+
+        public SaleItemRow(String productName, int quantity, double unitPrice, double totalAmount) {
+            this.productName = productName;
+            this.quantity = quantity;
+            this.unitPrice = unitPrice;
+            this.totalAmount = totalAmount;
         }
-        public String getProductName(){return productName;}
-        public int getQuantity(){return quantity;}
-        public double getUnitPrice(){return unitPrice;}
-        public double getTotalAmount(){return totalAmount;}
+
+        public String getProductName() {
+            return productName;
+        }
+
+        public int getQuantity() {
+            return quantity;
+        }
+
+        public double getUnitPrice() {
+            return unitPrice;
+        }
+
+        public double getTotalAmount() {
+            return totalAmount;
+        }
     }
 
     public static class StatRow {
         private final String productName;
         private final int count;
-        public StatRow(String productName, int count){this.productName = productName; this.count = count;}
-        public String getProductName(){return productName;}
-        public int getCount(){return count;}
+
+        public StatRow(String productName, int count) {
+            this.productName = productName;
+            this.count = count;
+        }
+
+        public String getProductName() {
+            return productName;
+        }
+
+        public int getCount() {
+            return count;
+        }
     }
 }

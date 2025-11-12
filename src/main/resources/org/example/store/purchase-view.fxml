@@ -16,7 +16,7 @@
     <top>
         <HBox alignment="CENTER_RIGHT" spacing="20"
               style="-fx-background-color: #4CAF50; -fx-padding: 15;">
-            <Label text="🍽 شاشة البيع - المطعم"
+            <Label text="شاشة البيع - المطعم"
                    style="-fx-font-size: 24px; -fx-text-fill: white; -fx-font-weight: bold;"/>
             <Region HBox.hgrow="ALWAYS"/>
             <Button text="تحديث المنتجات"

@@ -54,11 +54,11 @@
 
                     <Label style="-fx-font-weight: bold;" text="اسم المنتج:" GridPane.columnIndex="0"
                            GridPane.rowIndex="0"/>
-                    <TextField fx:id="nameField" promptText="مثال: شاورما فراخ" GridPane.columnIndex="1"
+                    <TextField fx:id="nameField"  GridPane.columnIndex="1"
                                GridPane.rowIndex="0"/>
 
                     <Label style="-fx-font-weight: bold;" text="السعر:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-                    <TextField fx:id="priceField" promptText="مثال: 35.00" GridPane.columnIndex="1"
+                    <TextField fx:id="priceField"  GridPane.columnIndex="1"
                                GridPane.rowIndex="1"/>
 
                     <Label style="-fx-font-weight: bold;" text="صورة المنتج:" GridPane.columnIndex="0"
