@@ -15,7 +15,7 @@ public class CartItemDTO {
         this.imagePath = imagePath;
     }
 
-    // Getters & Setters
+    // Getters
     public int getProductId() {
         return productId;
     }
@@ -32,14 +32,29 @@ public class CartItemDTO {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
     public String getImagePath() {
         return imagePath;
     }
 
+    // Setters مع تحقق بسيط
+    public void setUnitPrice(double unitPrice) {
+        if (unitPrice < 0) {
+            this.unitPrice = 0.0;
+        } else {
+            this.unitPrice = unitPrice;
+        }
+    }
+
+    public void setQuantity(int quantity) {
+        // نمنع كمية أقل من 1. لو تفضل أن 0 يعني حذف العنصر، استبدل السطر التالي بالسلوكية المطلوبة.
+        if (quantity < 1) {
+            this.quantity = 1;
+        } else {
+            this.quantity = quantity;
+        }
+    }
+
+    // عمليات مساعدة
     public double getSubtotal() {
         return unitPrice * quantity;
     }

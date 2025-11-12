@@ -7,10 +7,14 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.util.Callback;
+import javafx.util.converter.DoubleStringConverter;
 import org.example.store.model.Product;
 import org.example.store.utils.AlertUtil;
 import org.example.store.utils.CartItemDTO;
@@ -55,55 +59,119 @@ public class PurchaseViewController {
 
     @FXML
     public void initialize() {
+        // جدول قابل للتحرير
+        cartTable.setEditable(true);
+
         // إعداد أعمدة الجدول
         nameCol.setCellValueFactory(new PropertyValueFactory<>("productName"));
+
+        // السعر: قابل للتحرير باستخدام TextFieldTableCell و DoubleStringConverter
         priceCol.setCellValueFactory(new PropertyValueFactory<>("unitPrice"));
-        quantityCol.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+        priceCol.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
+        priceCol.setOnEditCommit(event -> {
+            CartItemDTO item = event.getRowValue();
+            Double newPrice = event.getNewValue();
+            if (newPrice == null) return;
+            if (newPrice < 0) {
+                AlertUtil.showWarning("تنبيه", "السعر يجب أن يكون قيمة موجبة");
+                cartTable.refresh();
+                return;
+            }
+            item.setUnitPrice(newPrice);
+            updateTotal();
+            cartTable.refresh();
+        });
+
+        quantityCol.setCellFactory(new Callback<TableColumn<CartItemDTO, Integer>, TableCell<CartItemDTO, Integer>>() {
+            @Override
+            public TableCell<CartItemDTO, Integer> call(TableColumn<CartItemDTO, Integer> col) {
+                return new TableCell<CartItemDTO, Integer>() {
+                    private final Button minusBtn = new Button("-");
+                    private final TextField qtyField = new TextField();
+                    private final Button plusBtn = new Button("+");
+                    private final HBox box = new HBox(5, minusBtn, qtyField, plusBtn);
+
+                    {
+                        box.setAlignment(Pos.CENTER);
+                        minusBtn.setStyle("-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold;");
+                        plusBtn.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;");
+                        qtyField.setPrefWidth(50);
+                        qtyField.setAlignment(Pos.CENTER);
+
+                        minusBtn.setOnAction(e -> {
+                            CartItemDTO item = getTableRow() == null ? null : (CartItemDTO) getTableRow().getItem();
+                            if (item != null) {
+                                int q = item.getQuantity();
+                                if (q > 1) item.setQuantity(q - 1);
+                                // لو تحب تسمح 0 وتحذفه بدل إبقائه 1، نفّذ الحذف هنا بدلاً من setQuantity(1)
+                                updateTotal();
+                                getTableView().refresh();
+                            }
+                        });
+
+                        plusBtn.setOnAction(e -> {
+                            CartItemDTO item = getTableRow() == null ? null : (CartItemDTO) getTableRow().getItem();
+                            if (item != null) {
+                                item.setQuantity(item.getQuantity() + 1);
+                                updateTotal();
+                                getTableView().refresh();
+                            }
+                        });
+
+                        qtyField.setOnAction(e -> commitQtyFromField());
+                        qtyField.focusedProperty().addListener((obs, wasFocused, isNow) -> {
+                            if (!isNow) {
+                                commitQtyFromField();
+                            }
+                        });
+                    }
+
+                    private void commitQtyFromField() {
+                        // احصل على العنصر بطريقة آمنة عبر getTableRow().getItem()
+                        CartItemDTO item = getTableRow() == null ? null : (CartItemDTO) getTableRow().getItem();
+                        if (item == null) return;
+
+                        String txt = qtyField.getText();
+                        try {
+                            int newQ = Integer.parseInt(txt.trim());
+                            if (newQ < 1) {
+                                // سلوك افتراضي: لا نسمح بأقل من 1 — نعرض تحذير ونرجع القيمة القديمة
+                                AlertUtil.showWarning("تنبيه", "الكمية يجب أن تكون رقمًا أكبر أو يساوي 1");
+                                qtyField.setText(String.valueOf(item.getQuantity()));
+                                return;
+                            }
+                            item.setQuantity(newQ);
+                            updateTotal();
+                            getTableView().refresh();
+                        } catch (NumberFormatException ex) {
+                            // لو غير صالح نرجع القيمة القديمة
+                            qtyField.setText(String.valueOf(item.getQuantity()));
+                        }
+                    }
+
+                    @Override
+                    protected void updateItem(Integer itemQty, boolean empty) {
+                        super.updateItem(itemQty, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            CartItemDTO cartItem = getTableRow() == null ? null : (CartItemDTO) getTableRow().getItem();
+                            if (cartItem != null) {
+                                qtyField.setText(String.valueOf(cartItem.getQuantity()));
+                                setGraphic(box);
+                            } else {
+                                setGraphic(null);
+                            }
+                        }
+                    }
+                };
+            }
+        });
+        // subtotal
         subtotalCol.setCellValueFactory(cellData ->
                 new javafx.beans.property.SimpleDoubleProperty(cellData.getValue().getSubtotal()).asObject());
 
-        // عمود الكمية مع أزرار + و -
-        quantityCol.setCellFactory(col -> new TableCell<CartItemDTO, Integer>() {
-            private final Button minusBtn = new Button("-");
-            private final Label quantityLabel = new Label();
-            private final Button plusBtn = new Button("+");
-            private final javafx.scene.layout.HBox box = new javafx.scene.layout.HBox(5, minusBtn, quantityLabel, plusBtn);
-
-            {
-                box.setAlignment(Pos.CENTER);
-                minusBtn.setStyle("-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold;");
-                plusBtn.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;");
-                quantityLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-min-width: 30px; -fx-alignment: center;");
-
-                minusBtn.setOnAction(e -> {
-                    CartItemDTO item = getTableView().getItems().get(getIndex());
-                    item.decrementQuantity();
-                    updateTotal();
-                    getTableView().refresh();
-                });
-
-                plusBtn.setOnAction(e -> {
-                    CartItemDTO item = getTableView().getItems().get(getIndex());
-                    item.incrementQuantity();
-                    updateTotal();
-                    getTableView().refresh();
-                });
-            }
-
-            @Override
-            protected void updateItem(Integer item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setGraphic(null);
-                } else {
-                    CartItemDTO cartItem = getTableView().getItems().get(getIndex());
-                    quantityLabel.setText(String.valueOf(cartItem.getQuantity()));
-                    setGraphic(box);
-                }
-            }
-        });
-
-        // عمود الإجراءات (حذف)
+        // عمود الحذف كما كان
         actionsCol.setCellFactory(col -> new TableCell<CartItemDTO, Void>() {
             private final Button deleteBtn = new Button("🗑");
 
